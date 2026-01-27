@@ -1,3 +1,1 @@
-export default function Archive() {
-  return <div>Archiv (TODO: echte Komponente einbinden)</div>;
-}
+export default function Archive(){return <h1>Archive</h1>}
