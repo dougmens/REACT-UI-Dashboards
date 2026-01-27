@@ -1,22 +1,20 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
-
-import Master from "./views/Master";
-import Cases from "./views/Cases";
-import Evidence from "./views/Evidence";
-import Archive from "./views/Archive";
-import Settings from "./views/Settings";
+import { VIEWS_ORDER } from "./views";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/master" replace />} />
-      <Route path="/master" element={<Master />} />
-      <Route path="/cases" element={<Cases />} />
-      <Route path="/evidence" element={<Evidence />} />
-      <Route path="/archive" element={<Archive />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="*" element={<Navigate to="/master" replace />} />
+      {/* Default → erste View */}
+      <Route path="/" element={<Navigate to={VIEWS_ORDER[0].path} replace />} />
+
+      {/* Routen aus VIEWS_ORDER */}
+      {VIEWS_ORDER.map((v) => (
+        <Route key={v.key} path={v.path} element={<v.Component />} />
+      ))}
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to={VIEWS_ORDER[0].path} replace />} />
     </Routes>
   );
 }
