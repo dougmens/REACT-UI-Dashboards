@@ -1,31 +1,22 @@
 import "./App.css";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-/**
- * Minimal-stabile App-Komponente.
- * Zweck:
- * - Build sicher grün bekommen
- * - Keine Router-/View-Abhängigkeiten
- * - Saubere Basis für den nächsten Schritt
- */
+import Master from "./views/Master";
+import Cases from "./views/Cases";
+import Evidence from "./views/Evidence";
+import Archive from "./views/Archive";
+import Settings from "./views/Settings";
 
 export default function App() {
   return (
-    <div style={{ padding: 16 }}>
-      <h1>REACT UI Dashboards</h1>
-      <p>Build OK – Routing und Views werden als Nächstes angebunden.</p>
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigate to="/master" replace />} />
+      <Route path="/master" element={<Master />} />
+      <Route path="/cases" element={<Cases />} />
+      <Route path="/evidence" element={<Evidence />} />
+      <Route path="/archive" element={<Archive />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="*" element={<Navigate to="/master" replace />} />
+    </Routes>
   );
-}
-
-/**
- * Temporär hier belassen, damit andere Imports nicht brechen.
- * Kann später in ein eigenes Modell-/types-File verschoben werden.
- */
-export interface Incident {
-  id: string;
-  case_id: string;
-  type: string;
-  description?: string;
-  date?: string;
-  status?: string;
 }
