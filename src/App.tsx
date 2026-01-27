@@ -1,24 +1,21 @@
-import { useState } from 'react'
-import './App.css'
+import { Routes, Route, Navigate } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Master from "./views/Master";
+import Cases from "./views/Cases";
+import Evidence from "./views/Evidence";
+import Archive from "./views/Archive";
+import Settings from "./views/Settings";
 
+export default function App() {
   return (
-    <>
-      <div>
-                <h1>REACT UI Dashboards</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-        </div>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Master />} />
+      <Route path="/master" element={<Master />} />
+      <Route path="/cases" element={<Cases />} />
+      <Route path="/evidence" element={<Evidence />} />
+      <Route path="/archive" element={<Archive />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="*" element={<Navigate to="/master" replace />} />
+    </Routes>
+  );
 }
-
-export default App
