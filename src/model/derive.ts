@@ -1,11 +1,11 @@
 import { addDays, isBefore, parseISO } from 'date-fns';
 import { CaseItem, Incident, EvidenceItem } from './types';
 
-export type CaseDerivedState = 'wartend' | 'kritisch' | 'ruhig';
+export type CaseDerivedState = 'wartet' | 'kritisch' | 'ruhig';
 
 export const deriveCaseState = (item: CaseItem): CaseDerivedState => {
   if (item.status === 'wartet') {
-    return 'wartend';
+    return 'wartet';
   }
   if (item.risk_level === 'hoch') {
     return 'kritisch';
@@ -23,7 +23,7 @@ export const deriveCaseState = (item: CaseItem): CaseDerivedState => {
 export const countDeadlinesWithin = (cases: CaseItem[], days: number): number => {
   const cutoff = addDays(new Date(), days);
   return cases.filter((item) => {
-    if (!item.deadline_date || item.status === 'archiv') {
+    if (!item.deadline_date || item.status === 'archiv' || item.status === 'erledigt') {
       return false;
     }
     const deadline = parseISO(item.deadline_date);
@@ -32,7 +32,17 @@ export const countDeadlinesWithin = (cases: CaseItem[], days: number): number =>
 };
 
 export const countOpenIncidents = (incidents: Incident[]): number =>
-  incidents.filter((item) => item.status !== 'archiv' && item.status !== 'abgeschlossen').length;
+  incidents.filter((item) => ['neu', 'offen', 'in_klaerung'].includes(item.status)).length;
 
 export const countUnassignedEvidence = (evidence: EvidenceItem[]): number =>
   evidence.filter((item) => !item.case_id && !item.incident_id).length;
+
+export const kpis = (cases: CaseItem[], incidents: Incident[], evidence: EvidenceItem[]) => ({
+  activeCases: cases.filter((item) =>
+    ['aktiv', 'pruefen', 'finalisieren', 'wartet'].includes(item.status),
+  ).length,
+  criticalCases: cases.filter((item) => deriveCaseState(item) === 'kritisch').length,
+  deadlines14: countDeadlinesWithin(cases, 14),
+  incidentsOpen: countOpenIncidents(incidents),
+  evidenceUntriaged: countUnassignedEvidence(evidence),
+});

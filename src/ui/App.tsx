@@ -12,7 +12,7 @@ const navItems = [
   { to: '/cases', label: 'Rechtsfälle', icon: Briefcase },
   { to: '/incidents', label: 'Schäden & Beweise', icon: FileText },
   { to: '/archive', label: 'Archiv', icon: Archive },
-  { to: '/settings', label: 'Settings', icon: Settings },
+  { to: '/settings', label: 'Einstellungen', icon: Settings },
 ];
 
 export const App: React.FC = () => {

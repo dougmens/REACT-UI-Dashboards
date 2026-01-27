@@ -1,7 +1,7 @@
 import { AppState, CaseItem, Incident, EvidenceItem } from './types';
 import { addDays, formatISO } from 'date-fns';
 
-const STORAGE_KEY = 'companion-system-state';
+const STORAGE_KEY = 'companion_dashboard_v1';
 
 const nowIso = () => new Date().toISOString();
 
@@ -14,9 +14,10 @@ const seedCase: CaseItem = {
   risk_level: 'hoch',
   next_action: 'Fristverlängerung beim Gericht beantragen.',
   deadline_date: formatISO(addDays(new Date(), 10), { representation: 'date' }),
-  deadline_type: 'Einspruch',
+  deadline_type: 'gericht',
   last_update_at: nowIso(),
   owner: 'Ich',
+  tags: ['frist', 'wohnung'],
   court: 'AG München',
   file_reference: 'AZ-2024-001',
   counterparty: 'Vermieter GmbH',
@@ -34,6 +35,7 @@ const seedIncident: Incident = {
   last_update_at: nowIso(),
   location: 'Wohnung Pullach',
   estimated_damage_eur: 120,
+  witnesses: ['Nachbarin'],
 };
 
 const seedEvidence: EvidenceItem = {
@@ -44,15 +46,50 @@ const seedEvidence: EvidenceItem = {
   date_created: formatISO(addDays(new Date(), -3), { representation: 'date' }),
   incident_id: 'incident-1',
   is_attachment_ready: false,
-  label: 'Nahaufnahme',
+  label: 'K1',
 };
 
 export const getSeedState = (): AppState => ({
   cases: [seedCase],
   incidents: [seedIncident],
   evidence: [seedEvidence],
-  logs: [],
+  logs: [
+    {
+      id: 'log-1',
+      entity_type: 'case',
+      entity_id: 'case-1',
+      at: nowIso(),
+      text: 'Fall angelegt.',
+      author: 'System',
+    },
+    {
+      id: 'log-2',
+      entity_type: 'incident',
+      entity_id: 'incident-1',
+      at: nowIso(),
+      text: 'Schaden dokumentiert.',
+      author: 'System',
+    },
+    {
+      id: 'log-3',
+      entity_type: 'incident',
+      entity_id: 'incident-1',
+      at: nowIso(),
+      text: 'Beweis hinzugefügt.',
+      author: 'System',
+    },
+  ],
 });
+
+export const seedIfEmpty = (): AppState => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) {
+    const seeded = getSeedState();
+    saveState(seeded);
+    return seeded;
+  }
+  return loadState();
+};
 
 export const loadState = (): AppState => {
   const stored = localStorage.getItem(STORAGE_KEY);

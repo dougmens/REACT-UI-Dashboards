@@ -23,9 +23,10 @@ export interface CaseItem {
   risk_level: RiskLevel;
   next_action: string;
   deadline_date?: string;
-  deadline_type?: string;
+  deadline_type?: 'gericht' | 'anwalt' | 'behoerde' | 'vertrag' | 'sonstiges';
   last_update_at: string;
   owner: string;
+  tags?: string[];
   court?: string;
   file_reference?: string;
   counterparty?: string;
@@ -45,7 +46,7 @@ export interface Incident {
   location?: string;
   estimated_damage_eur?: number;
   intent_suspected?: boolean;
-  witnesses?: string;
+  witnesses?: string[];
 }
 
 export interface EvidenceItem {

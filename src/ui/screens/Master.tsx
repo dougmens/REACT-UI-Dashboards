@@ -1,17 +1,11 @@
 import React from 'react';
 import { addDays, format, parseISO } from 'date-fns';
 import { useStore } from '../state/Store';
-import { countDeadlinesWithin, countOpenIncidents, countUnassignedEvidence, deriveCaseState } from '../../model/derive';
+import { deriveCaseState, kpis } from '../../model/derive';
 
 export const Master: React.FC = () => {
   const { state } = useStore();
-  const activeCases = state.cases.filter((item) =>
-    ['aktiv', 'pruefen', 'finalisieren', 'wartet'].includes(item.status),
-  );
-  const criticalCases = state.cases.filter((item) => deriveCaseState(item) === 'kritisch');
-  const deadlines14 = countDeadlinesWithin(state.cases, 14);
-  const openIncidents = countOpenIncidents(state.incidents);
-  const unassignedEvidence = countUnassignedEvidence(state.evidence);
+  const metrics = kpis(state.cases, state.incidents, state.evidence);
 
   const focusNow = [...state.cases]
     .filter((item) => item.status !== 'archiv')
@@ -27,7 +21,7 @@ export const Master: React.FC = () => {
 
   const upcomingCutoff = addDays(new Date(), 14);
   const deadlineRows = state.cases
-    .filter((item) => item.deadline_date && item.status !== 'archiv')
+    .filter((item) => item.deadline_date && !['archiv', 'erledigt'].includes(item.status))
     .map((item) => ({
       ...item,
       deadline: parseISO(item.deadline_date!),
@@ -44,23 +38,23 @@ export const Master: React.FC = () => {
       <section className="kpi-grid">
         <div className="kpi-card">
           <span>Aktive Fälle</span>
-          <strong>{activeCases.length}</strong>
+          <strong>{metrics.activeCases}</strong>
         </div>
         <div className="kpi-card">
           <span>Kritische Fälle</span>
-          <strong>{criticalCases.length}</strong>
+          <strong>{metrics.criticalCases}</strong>
         </div>
         <div className="kpi-card">
           <span>Fristen in 14 Tagen</span>
-          <strong>{deadlines14}</strong>
+          <strong>{metrics.deadlines14}</strong>
         </div>
         <div className="kpi-card">
           <span>Offene Schäden</span>
-          <strong>{openIncidents}</strong>
+          <strong>{metrics.incidentsOpen}</strong>
         </div>
         <div className="kpi-card">
           <span>Beweise ohne Zuordnung</span>
-          <strong>{unassignedEvidence}</strong>
+          <strong>{metrics.evidenceUntriaged}</strong>
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { AppState, CaseItem, Incident, EvidenceItem, ActionLog } from '../../model/types';
-import { loadState, saveState, resetState } from '../../model/storage';
+import { loadState, saveState, resetState, seedIfEmpty } from '../../model/storage';
 
 interface StoreContextValue {
   state: AppState;
@@ -27,7 +27,7 @@ const addLogEntry = (logs: ActionLog[], entry: ActionLog): ActionLog[] => {
 };
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AppState>(() => loadState());
+  const [state, setState] = useState<AppState>(() => seedIfEmpty());
 
   const persist = (nextState: AppState) => {
     setState(nextState);

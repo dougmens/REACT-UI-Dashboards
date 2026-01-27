@@ -7,14 +7,14 @@ export const SettingsView: React.FC = () => {
   return (
     <div className="screen">
       <header className="screen-header">
-        <h1>Settings</h1>
+        <h1>Einstellungen</h1>
         <p>Nur lokale Datenverwaltung.</p>
       </header>
       <section className="panel">
         <h2>Demo-Daten</h2>
         <p>Setzt alle lokalen Daten auf den Ausgangszustand zurück.</p>
         <button className="primary" onClick={() => resetDemo()}>
-          Reset demo data
+          Demo zurücksetzen
         </button>
       </section>
     </div>
