@@ -10,6 +10,7 @@ interface StoreContextValue {
   archiveCase: (caseId: string) => void;
   archiveIncident: (incidentId: string) => void;
   resetDemo: () => void;
+  applyCompanionData: (data: Partial<AppState>) => void;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -102,6 +103,26 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setState(nextState);
   };
 
+  const applyCompanionData = (data: Partial<AppState>) => {
+    const mergeById = <T extends { id: string }>(orig: T[], incoming?: T[]) => {
+      if (!incoming || incoming.length === 0) return orig;
+      const map = new Map(orig.map((o) => [o.id, o]));
+      incoming.forEach((i) => {
+        const existing = map.get(i.id);
+        map.set(i.id, existing ? { ...existing, ...i } : i);
+      });
+      return Array.from(map.values());
+    };
+
+    const nextState: AppState = {
+      cases: mergeById(state.cases, data.cases),
+      incidents: mergeById(state.incidents, data.incidents),
+      evidence: mergeById(state.evidence, data.evidence),
+      logs: data.logs ? trimLogs([...state.logs, ...data.logs]) : state.logs,
+    };
+    persist(nextState);
+  };
+
   const value = useMemo(
     () => ({
       state,
@@ -111,6 +132,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       archiveCase,
       archiveIncident,
       resetDemo,
+      applyCompanionData,
     }),
     [state],
   );

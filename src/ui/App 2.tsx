@@ -6,6 +6,7 @@ import { Cases } from './screens/Cases';
 import { Incidents } from './screens/Incidents';
 import { ArchiveView } from './screens/ArchiveView';
 import { SettingsView } from './screens/SettingsView';
+import { CompanionReceiver } from '../components/CompanionReceiver';
 
 const navItems = [
   { to: '/', label: 'Master', icon: Home },
@@ -43,6 +44,7 @@ export const App: React.FC = () => {
         </nav>
       </aside>
       <main className="content">
+        <CompanionReceiver />
         <Routes>
           <Route path="/" element={<Master />} />
           <Route path="/cases" element={<Cases />} />
