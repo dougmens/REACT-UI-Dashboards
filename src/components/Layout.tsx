@@ -1,4 +1,4 @@
-iimport { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { VIEWS_ORDER } from "../views";
 
 export default function Layout() {
